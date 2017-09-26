@@ -1,0 +1,55 @@
+@mixin overlay {
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  display: block; /* should not have !important flag */
+  font-family: system-ui, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+@mixin element-overlay {
+  border: 1px solid #ff0000 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  z-index: 999999 !important;
+}
+
+body #{$information-overlay} {
+  @include overlay;
+  background-color: #249b90 !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  height: 45px !important;
+  left: 0px !important;
+  line-height: 45px;
+  padding: 0 10px !important;
+  position: fixed !important;
+  top: 0px !important;
+  width: 100% !important;
+  z-index: 9999990 !important;
+
+  b {
+    color: rgba(255, 255, 255, 1) !important;
+    font-weight: 700 !important;
+    margin-left: 20px !important;
+    margin-right: 2px !important;
+
+    &:first-child {
+      margin-left: 0px !important;
+    }
+  }
+}
+
+body #{$focus-overlay} {
+  @include overlay;
+  @include element-overlay;
+  background-color: rgba(255, 0, 0, 0.5) !important;
+}
+
+body #{$mouse-overlay} {
+  @include overlay;
+  @include element-overlay;
+  background-color: rgba(255, 0, 0, 0.3) !important;
+}

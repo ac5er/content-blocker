@@ -1,0 +1,124 @@
+body {
+  box-sizing: border-box;
+  padding: 10px;
+  &.popup {
+    width: 400px;
+  }
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.page-container {
+  overflow: auto;
+  width: 100%;
+}
+
+.page-content {
+  margin-top: 50px;
+}
+
+.app-title {
+  background: url(../icons/icon_256.png) no-repeat center left;
+  background-size: 28px;
+  text-indent: 35px;
+}
+
+.table-title {
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.main-table {
+  td {
+    div.selector {
+      width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  th {
+    font-weight: 400;
+  }
+
+  td,
+  th {
+    padding: 0.5rem 1.5rem;
+
+    &:first-child,
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child,
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.action-button,
+.action-button-2 {
+  margin-bottom: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.action-button {
+  &,
+  [class^='icon-']:before,
+  [class*=' icon-']:before {
+    font-size: 1.9rem;
+  }
+}
+
+.action-button-2 {
+  [class^='icon-']:before,
+  [class*=' icon-']:before {
+    font-size: 1.6rem;
+  }
+}
+
+.error {
+  color: $color-error;
+}
+
+.message {
+  background-color: $message-bg-color;
+  color: $message-color;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 25px;
+  padding: 10px;
+  transition: text-indent 0.3s ease-out, background-color 0.5s ease-out;
+}
+
+.message:empty {
+  background-color: transparent;
+  height: 0;
+  padding: 0;
+  text-indent: -150px;
+}
+
+.button-green {
+  background-color: $color-green;
+  border-color: $color-green;
+
+  &.button-clear,
+  &.button-outline {
+    background-color: transparent;
+    color: $color-green;
+  }
+
+  &.button-clear {
+    border-color: transparent;
+  }
+}
