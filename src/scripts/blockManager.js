@@ -1,14 +1,19 @@
 import helpers from './helpers';
-const storageKey = 'blockList';
+
+const STORAGE_KEY = 'blockList';
+
+const clearStorage = (callback) => {
+  chrome.storage.local.clear(() => {
+    callback();
+  });
+};
 
 const addBlockRule = (sender, request) => {
-  const pattern = helpers.trimTrailingSlash(
-    helpers.getPatternFromURL(sender.url)
-  );
+  const pattern = helpers.trimTrailingSlash(helpers.getPatternFromURL(sender.url));
   const selector = helpers.safeSelector(request.selector);
 
-  chrome.storage.local.get(storageKey, patterns => {
-    let storageObject = storageKey in patterns ? patterns[storageKey] : {};
+  chrome.storage.local.get(STORAGE_KEY, (patterns) => {
+    const storageObject = STORAGE_KEY in patterns ? patterns[STORAGE_KEY] : {};
 
     if (!(pattern in storageObject)) {
       storageObject[pattern] = {};
@@ -16,31 +21,31 @@ const addBlockRule = (sender, request) => {
 
     storageObject[pattern][selector] = { updatedAt: helpers.getTimestamp() };
     const obj = {};
-    obj[storageKey] = storageObject;
+    obj[STORAGE_KEY] = storageObject;
 
     chrome.storage.local.set(obj, () => {
       chrome.tabs.sendMessage(sender.tab.id, {
         command: 'load_block_list',
-        noBadgeChange: true
+        noBadgeChange: true,
       });
     });
   });
 };
 
 const removeBlockRule = (pattern, selector, callback) => {
-  let obj = {};
-  obj[storageKey] = {};
+  const obj = {};
+  obj[STORAGE_KEY] = {};
 
-  chrome.storage.local.get(storageKey, storageData => {
+  chrome.storage.local.get(STORAGE_KEY, (storageData) => {
     if (
-      storageKey in storageData &&
-      pattern in storageData[storageKey] &&
-      selector in storageData[storageKey][pattern]
+      STORAGE_KEY in storageData &&
+      pattern in storageData[STORAGE_KEY] &&
+      selector in storageData[STORAGE_KEY][pattern]
     ) {
-      obj[storageKey] = storageData[storageKey];
-      delete obj[storageKey][pattern][selector];
-      if (helpers.isEmpty(obj[storageKey][pattern])) {
-        delete obj[storageKey][pattern];
+      obj[STORAGE_KEY] = storageData[STORAGE_KEY];
+      delete obj[STORAGE_KEY][pattern][selector];
+      if (helpers.isEmpty(obj[STORAGE_KEY][pattern])) {
+        delete obj[STORAGE_KEY][pattern];
       }
 
       chrome.storage.local.set(obj, () => {
@@ -50,35 +55,7 @@ const removeBlockRule = (pattern, selector, callback) => {
   });
 };
 
-const clearStorage = callback => {
-  chrome.storage.local.clear(() => {
-    callback();
-  });
-};
-
-const getBlockList = (url, callback) => {
-  const pattern = url
-    ? helpers.trimTrailingSlash(helpers.getPatternFromURL(url))
-    : '';
-
-  chrome.storage.local.get(storageKey, storageData => {
-    const blockList = { rules: {}, count: 0 };
-
-    if (storageKey in storageData) {
-      const patterns = storageData[storageKey];
-      blockList.rules = filterBlockList(patterns, pattern);
-      for (let key in blockList.rules) {
-        if (blockList.rules.hasOwnProperty(key)) {
-          blockList.count += Object.keys(blockList.rules[key]).length;
-        }
-      }
-    }
-
-    callback(blockList);
-  });
-};
-
-const filterBlockList = (patterns, pattern) => {
+const getFilteredBlockListRules = (patterns, pattern) => {
   let rules = {};
 
   if (patterns) {
@@ -92,4 +69,27 @@ const filterBlockList = (patterns, pattern) => {
   return rules;
 };
 
-export default { addBlockRule, clearStorage, getBlockList, removeBlockRule };
+const getBlockList = (url, callback) => {
+  const pattern = url ? helpers.trimTrailingSlash(helpers.getPatternFromURL(url)) : '';
+
+  chrome.storage.local.get(STORAGE_KEY, (storageData) => {
+    const blockList = { rules: {}, count: 0 };
+
+    if (STORAGE_KEY in storageData) {
+      const patterns = storageData[STORAGE_KEY];
+      blockList.rules = getFilteredBlockListRules(patterns, pattern);
+      Object.keys(blockList.rules).forEach((key) => {
+        blockList.count += Object.keys(blockList.rules[key]).length;
+      });
+    }
+
+    callback(blockList);
+  });
+};
+
+export default {
+  addBlockRule,
+  clearStorage,
+  getBlockList,
+  removeBlockRule,
+};

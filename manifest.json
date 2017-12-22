@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Content Blocker",
-  "description": "Block parts of web pages you don't want to see again.",
-  "version": "1.0.1",
+  "description": "Easily block parts of web pages you don't want to see again.",
+  "version": "1.1.0",
   "author": {
     "name": "Adem Coskuner",
     "github": "https://github.com/ac5er",

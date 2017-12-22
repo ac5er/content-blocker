@@ -1,12 +1,16 @@
 import blockManager from './blockManager';
-import helpers from './helpers';
+
 const appName = chrome.app.getDetails().name;
+const setBadge = (tabId, text = '', color = '#555') => {
+  chrome.browserAction.setBadgeBackgroundColor({ color, tabId });
+  chrome.browserAction.setBadgeText({ text, tabId });
+};
 
 chrome.extension.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.command) {
     case 'get_app_details':
       sendResponse({
-        data: chrome.app.getDetails()
+        data: chrome.app.getDetails(),
       });
       break;
 
@@ -19,27 +23,22 @@ chrome.extension.onMessage.addListener((request, sender, sendResponse) => {
       break;
 
     case 'request_block_list':
-      const blockListCallback = list => {
+      blockManager.getBlockList(sender.url, (list) => {
         chrome.tabs.sendMessage(sender.tab.id, {
           command: 'block_list',
           blockList: list,
-          ...request.responseParams
+          ...request.responseParams,
         });
-      };
-
-      blockManager.getBlockList(sender.url, blockListCallback);
+      });
       break;
 
     case 'set_title':
       chrome.browserAction.setTitle({
         tabId: sender.tab.id,
-        title: request.title || appName
+        title: request.title || appName,
       });
       break;
+
+    default:
   }
 });
-
-const setBadge = (tabId, text = '', color = '#555') => {
-  chrome.browserAction.setBadgeBackgroundColor({ color, tabId });
-  chrome.browserAction.setBadgeText({ text, tabId });
-};

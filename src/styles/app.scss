@@ -74,15 +74,15 @@ body {
 
 .action-button {
   &,
-  [class^='icon-']:before,
-  [class*=' icon-']:before {
+  [class^="icon-"]:before,
+  [class*=" icon-"]:before {
     font-size: 1.9rem;
   }
 }
 
 .action-button-2 {
-  [class^='icon-']:before,
-  [class*=' icon-']:before {
+  [class^="icon-"]:before,
+  [class*=" icon-"]:before {
     font-size: 1.6rem;
   }
 }
@@ -121,4 +121,12 @@ body {
   &.button-clear {
     border-color: transparent;
   }
+}
+
+.nomargin {
+  margin: 0;
+}
+
+.overflow-visible {
+  overflow: visible;
 }
